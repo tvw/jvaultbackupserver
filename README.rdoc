@@ -1,0 +1,54 @@
+= JVaultBackupServer
+
+This is a simple backup server for jVault from
+{COHOSOFT}[http://www.cohosoft.com], a password manager for WebOS. With it you
+can backup your passwords to your computer via a network connection. In
+contrast to the php-script provided by COHOSOFT, you do not need a webserver
+like Apache or IIS and it also keeps a backup history. It should run on Linux
+and Windows, though I have only tested it on Linux.
+
+== Requirements
+
+You need a {Ruby}[http://www.ruby-lang.org/] interpreter on your machine and
+the {Sinatra}[http://www.sinatrarb.com/] gem.
+
+== Installation
+
+* Install sinatra:
+    gem install sinatra
+
+* Copy the 'jvaultbackupserver' script to a place on your machine, where you
+  want to use it.
+
+* Copy 'jvaultbackupserver.conf.example' to the same directory.
+
+* Rename it to 'jvaultbackupserver.conf' and edit it. You need to setup a
+  username and a password and the location of the files.
+
+* Run it:
+
+    ruby jvaultbackupserver
+
+    or on Linux just:
+
+    ./jvaultbackupserver
+
+* Configure jVault "Wireless Backup":
+    URL: http://[your-ip-address]:4567/
+    LOGIN: [username from the conffile]
+    PASSWORD: [password from the conffile]
+
+* Press "Test Settings". jVault should say "successful" and the console
+  output of jvaultbackupserver and the logfile should report the test.
+
+Now you can backup and restore your passwords.
+
+== Author
+
+Thomas Volkmar Worm, \<mailto:tvw@s4r.de>
+
+== Copyright
+
+Copyright (c) 2010 Thomas Volkmar Worm
+
+See LICENSE for details
