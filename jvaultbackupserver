@@ -1,0 +1,91 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'sinatra'
+require 'logger'
+
+USERNAME = 'jvault'
+PASSWORD = 'secret'
+
+BACKUP_FILE = 'backup/jvault_backup.bak'
+BACKUP_FILE_STAMPED = "backup/jvault_backup-%Y%m%d-%H%M%S.bak"
+LOG_FILE = "log/development.log"
+
+post '/' do
+
+  # Login
+  unless params['user'] == USERNAME and params['pass'] == PASSWORD
+    logger.error("Login failed")
+    return 401
+  end
+
+  # Test
+  if params['op'] == 'test'
+    logger.info("Test: Successful")
+    return "Successful"
+  end
+
+  # Make backup
+  if params['op'] == 'put'
+    begin
+      bckfile = Time.new.strftime(BACKUP_FILE_STAMPED)
+
+      File.open(BACKUP_FILE,'w') do |fh|
+        fh.write(params['data'])
+      end
+      File.open(bckfile,'w') do |fh|
+        fh.write(params['data'])
+      end
+      logger.info("Put: made a backup to #{bckfile}")
+      return "Put Complete"
+    rescue
+      logger.error("Put: Server Error (#{bckfile})")
+      return 500
+    end
+  end
+
+  # Send last backup
+  if params['op'] == 'get'
+    begin
+      data = IO.read(BACKUP_FILE)
+      str = File.new(BACKUP_FILE).mtime.to_s
+      logger.info("Get: Restored File (#{str})")
+      return data
+    rescue
+      logger.error("Get: Server Error (#{bckfile})")
+      return 500
+    end
+  end
+
+  # Send information about last backup
+  if params['op'] == 'lastmodified'
+    begin
+      str = File.new(BACKUP_FILE).mtime.to_s + "|" + "cloud backup"
+      logger.info("Last Modified: #{str}")
+      return str
+    rescue
+      logger.error("Last Modified: Server Error")
+      return 500
+    end
+  end
+
+end
+
+configure :development do
+  LOGGER = Logger.new(LOG_FILE)
+  enable :logging, :dump_errors
+  set :raise_errors, true
+  LOGGER.info("STARTED")
+end
+
+error do
+  e = request.env['sinatra.error']
+  puts e.to_s
+  puts e.backtrace.join("\n")
+  "Application Error!"
+end
+
+helpers do
+  def logger
+    LOGGER
+  end
+end
