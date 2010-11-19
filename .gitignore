@@ -3,3 +3,4 @@
 /backup/*.bak
 /log/*.log
 /cohosoft
+/jvaultbackupserver.conf

@@ -2,13 +2,17 @@
 require 'rubygems'
 require 'sinatra'
 require 'logger'
+require 'yaml' 
 
-USERNAME = 'jvault'
-PASSWORD = 'secret'
 
-BACKUP_FILE = 'backup/jvault_backup.bak'
-BACKUP_FILE_STAMPED = "backup/jvault_backup-%Y%m%d-%H%M%S.bak"
-LOG_FILE = "log/development.log"
+CONFIG = YAML.load( IO.read("jvaultbackupserver.conf") )
+
+USERNAME = CONFIG['username']
+PASSWORD = CONFIG['password']
+
+BACKUP_FILE = CONFIG['backup_file']
+BACKUP_FILE_STAMPED = CONFIG['backup_file_stamped']
+LOG_FILE = CONFIG['log_file']
 
 post '/' do
 

@@ -1,0 +1,8 @@
+# Authorization:
+username: jvault
+password: secret
+
+# Files
+backup_file: backup/jvault_backup.bak
+backup_file_stamped: backup/jvault_backup-%Y%m%d-%H%M%S.bak
+log_file: log/development.log
